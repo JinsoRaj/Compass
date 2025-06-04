@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "question_text",
+  "pillar",
   "options"
  ],
  "fields": [
@@ -22,11 +23,17 @@
    "fieldtype": "Table",
    "label": "Options",
    "options": "Question Option"
+  },
+  {
+   "fieldname": "pillar",
+   "fieldtype": "Select",
+   "label": "Pillar",
+   "options": "\nPeople\nPractice\nProcess"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-18 22:47:12.799742",
+ "modified": "2025-06-05 01:03:58.381908",
  "modified_by": "Administrator",
  "module": "Compass App",
  "name": "Question",
