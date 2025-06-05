@@ -23,7 +23,7 @@
   },
   {
    "fieldname": "description",
-   "fieldtype": "Text Editor",
+   "fieldtype": "Text",
    "label": "Description"
   },
   {
@@ -41,7 +41,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-21 16:12:10.405262",
+ "modified": "2025-06-06 02:59:46.428604",
  "modified_by": "Administrator",
  "module": "Compass App",
  "name": "Assessment",

@@ -5,12 +5,22 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "summary_section",
   "assessment",
   "respondent",
   "total_score",
   "max_possible_score",
   "percentage_score",
   "current_scale",
+  "column_break_socy",
+  "pillar_1_text",
+  "pillar_2_text",
+  "pillar_3_text",
+  "column_break_yaqe",
+  "pillar_1_score",
+  "pillar_2_score",
+  "pillar_3_score",
+  "answers_section",
   "answers"
  ],
  "fields": [
@@ -57,11 +67,59 @@
    "ignore_user_permissions": 1,
    "label": "Answers",
    "options": "Assessment Answer"
+  },
+  {
+   "fieldname": "summary_section",
+   "fieldtype": "Section Break",
+   "label": "Summary"
+  },
+  {
+   "fieldname": "column_break_socy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pillar_1_text",
+   "fieldtype": "Data",
+   "label": "Pillar 1 text"
+  },
+  {
+   "fieldname": "answers_section",
+   "fieldtype": "Section Break",
+   "label": "Answers"
+  },
+  {
+   "fieldname": "column_break_yaqe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pillar_1_score",
+   "fieldtype": "Data",
+   "label": "Pillar 1 score"
+  },
+  {
+   "fieldname": "pillar_2_text",
+   "fieldtype": "Data",
+   "label": "Pillar 2 text"
+  },
+  {
+   "fieldname": "pillar_2_score",
+   "fieldtype": "Data",
+   "label": "Pillar 2 score"
+  },
+  {
+   "fieldname": "pillar_3_text",
+   "fieldtype": "Data",
+   "label": "Pillar 3 text"
+  },
+  {
+   "fieldname": "pillar_3_score",
+   "fieldtype": "Data",
+   "label": "Pillar 3 score"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-19 16:27:51.726785",
+ "modified": "2025-06-05 23:50:46.825002",
  "modified_by": "Administrator",
  "module": "Compass App",
  "name": "Assessment Response",
