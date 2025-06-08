@@ -22,7 +22,7 @@ class AssessmentResponse(Document):
         self.total_score = sum(answer.weight for answer in self.answers if answer.weight)
         self.max_possible_score = self.calculate_max_possible_score()
         self.percentage_score = (self.total_score / self.max_possible_score * 100) if self.max_possible_score else 0
-        self.current_scale = self.get_current_scale()
+        self.current_scale, self.scale_description = self.get_current_scale()
 
     def calculate_pillar_scores(self):
         """Calculate scores and percentages for each pillar"""
@@ -75,7 +75,7 @@ class AssessmentResponse(Document):
         assessment = frappe.get_doc("Assessment", self.assessment)
         for scale in assessment.scales:
             if scale.min_score <= self.percentage_score <= scale.max_score:
-                return scale.scale_name
+                return scale.scale_name, scale.scale_description  # Return both values as a tuple
         return "Undefined"
 
     @staticmethod

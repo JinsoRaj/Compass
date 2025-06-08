@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "question_text",
+  "pillar_item",
   "pillar",
   "options"
  ],
@@ -25,15 +26,21 @@
    "options": "Question Option"
   },
   {
+   "fetch_from": "pillar_item.pillar_name",
    "fieldname": "pillar",
    "fieldtype": "Select",
-   "label": "Pillar",
-   "options": "\nPeople\nPractice\nProcess"
+   "label": "Pillar text"
+  },
+  {
+   "fieldname": "pillar_item",
+   "fieldtype": "Link",
+   "label": "Pillar Item",
+   "options": "Pillar"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-05 01:03:58.381908",
+ "modified": "2025-06-06 13:20:30.984075",
  "modified_by": "Administrator",
  "module": "Compass App",
  "name": "Question",

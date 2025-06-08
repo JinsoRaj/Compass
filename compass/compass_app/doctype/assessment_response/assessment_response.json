@@ -12,6 +12,7 @@
   "max_possible_score",
   "percentage_score",
   "current_scale",
+  "scale_description",
   "column_break_socy",
   "pillar_1_text",
   "pillar_2_text",
@@ -115,11 +116,16 @@
    "fieldname": "pillar_3_score",
    "fieldtype": "Data",
    "label": "Pillar 3 score"
+  },
+  {
+   "fieldname": "scale_description",
+   "fieldtype": "Text",
+   "label": "Scale Description"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-05 23:50:46.825002",
+ "modified": "2025-06-06 12:28:20.748528",
  "modified_by": "Administrator",
  "module": "Compass App",
  "name": "Assessment Response",

@@ -4,10 +4,10 @@
 {% set status_colors = {1: 'green', 2: 'yellow', 3: 'orange', 4: 'red'} %}
 {% set status_color = status_colors.get(option.rank, 'gray') %}
 {% set color_classes = {
-    'green': 'bg-green-100 text-green-800 border-green-400',
-    'yellow': 'bg-yellow-100 text-yellow-800 border-yellow-400',
-    'orange': 'bg-orange-100 text-orange-800 border-orange-400',
-    'red': 'bg-red-100 text-red-800 border-red-400'
+    'green': 'bg-cptcard text-green-800 border-green-400',
+    'yellow': 'bg-cptcard text-yellow-800 border-yellow-400',
+    'orange': 'bg-cptcard text-orange-800 border-orange-400',
+    'red': 'bg-cptcard text-red-800 border-red-400'
 } %}
 {% set badge_text = {
     1: 'L4',
@@ -16,21 +16,21 @@
     4: 'L1'
 } %}
 
-<div class="suggestion-card bg-white rounded-lg shadow-sm mb-6 p-6 border-l-4 {{ color_classes[status_color] }}">
+<div class="suggestion-card rounded-lg shadow-sm mb-6 p-6 border-l-4 {{ color_classes[status_color] }}">
     <div class="flex items-start">
         <div class="status-badge mr-4 {{ color_classes[status_color].replace('border-l-4', '') }}">
             {{ badge_text.get(option.rank, 'Status') }}
         </div>
         <div>
-            <p class="text-gray-500 text-sm mb-1">Question</p>
-            <h3 class="text-xl font-semibold text-gray-800 mb-3">
+            <p class="text-cptmuted text-sm mb-1">Question</p>
+            <h3 class="text-xl font-semibold text-cptheading mb-3">
                 {{ question.question_text }}
             </h3>
-            <p class="text-gray-600">
+            <p class="text-cptmuted">
                 {{ option.option_text }}
             </p>
-            <a href="#" class="inline-block mt-4 text-primary-500 font-medium hover:text-primary-600">
-                Tips to improve →
+            <a href="{{option.suggestion_link}}" class="inline-block mt-4 text-cptaccent font-medium hover:text-cptinfo">
+                Tips to improve - {{option.suggestion_text}} →
             </a>
         </div>
     </div>

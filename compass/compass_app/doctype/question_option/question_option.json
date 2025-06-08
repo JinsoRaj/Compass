@@ -9,7 +9,9 @@
  "field_order": [
   "option_text",
   "rank",
-  "weight"
+  "weight",
+  "suggestion_text",
+  "suggestion_link"
  ],
  "fields": [
   {
@@ -38,12 +40,24 @@
    "in_list_view": 1,
    "label": "Weight",
    "read_only": 1
+  },
+  {
+   "fieldname": "suggestion_text",
+   "fieldtype": "Text",
+   "in_list_view": 1,
+   "label": "Suggestion text"
+  },
+  {
+   "fieldname": "suggestion_link",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Suggestion link"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-05-19 17:12:52.515958",
+ "modified": "2025-06-08 19:21:53.731986",
  "modified_by": "Administrator",
  "module": "Compass App",
  "name": "Question Option",
