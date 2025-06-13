@@ -9,6 +9,8 @@
  "field_order": [
   "assessment_name",
   "description",
+  "time_required",
+  "guidelines",
   "scales",
   "questions"
  ],
@@ -37,11 +39,21 @@
    "fieldtype": "Table",
    "label": "Questions",
    "options": "Assesment Question List"
+  },
+  {
+   "fieldname": "time_required",
+   "fieldtype": "Data",
+   "label": "Time required (in minutes)"
+  },
+  {
+   "fieldname": "guidelines",
+   "fieldtype": "Text Editor",
+   "label": "Guidelines"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-06 02:59:46.428604",
+ "modified": "2025-06-12 12:15:59.032631",
  "modified_by": "Administrator",
  "module": "Compass App",
  "name": "Assessment",
