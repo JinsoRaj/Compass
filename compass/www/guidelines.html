@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment Guidelines</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            500: '#10BED2',
+                            600: '#0DA3B4'
+                        },
+                        secondary: {
+                            800: '#3A4C58'
+                        },
+                        'cpbg': '#18222A',
+                        'cptbg': '#3C4B4E',
+                        'cppillartext':'#8bbbb8',
+                        'cpttext': '#CFF2DA',         
+                        'cptsecondary': '#617570',    
+                        'cptaccent': '#4ECDC4',       
+                        'cptaccent2': '#FF6B6B',      
+                        'cptinfo': '#1A535C',         
+                        'cptsuccess': '#88D498',      
+                        'cptcard': '#22303C',         
+                        'cptheading': '#F0FFF5',      
+                        'cptdivider': '#32404A',      
+                        'cptmuted': '#A0B3A8',        
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.015em;
+            background: #18222A;
+        }
+        .ql-editor p, ol, h1,h2,h3,h4,h5,h6{
+          color: white;
+        }
+        .guidelines-card {
+            border: 1.5px dashed #617570;
+            transition: all 0.3s ease;
+        }
+        .guidelines-card:hover {
+            border-color: #4ECDC4;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .custom-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #617570;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            transition: all 0.2s ease;
+        }
+        .checkbox-container input:checked + .custom-checkbox {
+            background-color: #4ECDC4;
+            border-color: #4ECDC4;
+        }
+        .checkbox-container input:checked + .custom-checkbox::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+        }
+        .checkbox-container:hover .custom-checkbox {
+            border-color: #4ECDC4;
+        }
+        #startBtn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .guidelines-content {
+            /*max-height: 500px;*/
+            overflow-y: scroll;
+            padding-right: 10px;
+            /*background-color: rgba(255,255,255,0.03);*/
+            scrollbar-gutter: stable;
+            scrollbar-color: #4ECDC4 #32404A; 
+        }
+        .guidelines-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .guidelines-content::-webkit-scrollbar-track {
+            background: #32404A;
+            border-radius: 4px;
+        }
+        .guidelines-content::-webkit-scrollbar-thumb {
+            background: #4ECDC4; 
+            border-radius: 4px;
+        }
+        .guidelines-content::-webkit-scrollbar-thumb:hover {
+            background: #4ECDC4;
+        }
+    </style>
+</head>
+<body class="bg-cpbg text-cpttext">
+    <!-- Header -->
+    <div class="bg-cptbg">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-cptheading">Compass</h1>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 py-12">
+        <!-- Assessment Title -->
+        <div class="text-center mb-14">
+            <div class="inline-block bg-cptcard/60 backdrop-blur-sm px-6 py-2 rounded-full mb-6">
+                <span class="text-cptaccent font-medium">Assessment Guidelines</span>
+            </div>
+            <h1 class="text-4xl font-bold text-cptheading mb-6">
+                {{ assessment.assessment_name }}
+            </h1>
+            <div class="flex justify-center items-center text-cptmuted">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                </svg>
+                <span>{{ assessment.time_required }} minutes • {{ assessment.questions | length }} questions</span>
+            </div>
+        </div>
+
+        <!-- Guidelines Card -->
+        <div class="guidelines-card bg-cptcard/60 backdrop-blur-sm rounded-xl p-6 mb-10">
+            <div class="flex items-center mb-6">
+                <div class="bg-[#1A535C] w-10 h-10 rounded-full flex items-center justify-center mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cptaccent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-cptheading">Important Guidelines</h2>
+            </div>
+            
+            <div class="guidelines-content text-cptmuted mb-6">
+                {{ assessment.guidelines }}
+            </div>
+            
+            <div class="pt-6 border-t border-cptdivider">
+                <div class="flex items-start">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="agreementCheckbox" class="hidden">
+                        <span class="custom-checkbox"></span>
+                    </label>
+                    <div>
+                        <p class="text-cptheading font-medium mb-1">I agree to the assessment guidelines</p>
+                        <p class="text-cptmuted text-sm">
+                            By checking this box, I confirm that I have read and understood all guidelines 
+                            and will complete this assessment honestly and to the best of my ability.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Start Button -->
+        <div class="text-center">
+            <button
+                id="startBtn"
+                class="inline-block bg-[#055e69] hover:bg-primary-600 text-white py-4 px-10 rounded-lg transition font-medium text-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#055e69]"
+                disabled
+                onclick="window.location.href='/assessments/{{ assessment.name }}/questions'"
+            >
+                Start Assessment Now
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 inline" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+            
+            <p class="text-cptmuted mt-8">
+                Need more time to review? <a href="/" class="text-cptaccent hover:underline">Return to assessments</a>
+            </p>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-cptdivider text-center text-cptmuted">
+            <p>© {{ frappe.utils.nowdate()[:4] }} Compass Assessments. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkbox = document.getElementById('agreementCheckbox');
+            const startBtn = document.getElementById('startBtn');
+    
+            checkbox.addEventListener('change', function () {
+                startBtn.disabled = !this.checked;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+{% extends "templates/base.html" %}
+{% block content %}
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: {
+                        500: '#10BED2',
+                        600: '#0DA3B4'
+                    },
+                    secondary: {
+                        800: '#3A4C58'
+                    },
+                    'cpbg': '#18222A',
+                    'cptbg': '#3C4B4E',
+                    'cppillartext':'#8bbbb8',
+                    'cpttext': '#CFF2DA',         
+                    'cptsecondary': '#617570',    
+                    'cptaccent': '#4ECDC4',       
+                    'cptaccent2': '#FF6B6B',      
+                    'cptinfo': '#1A535C',         
+                    'cptsuccess': '#88D498',      
+                    'cptcard': '#22303C',         
+                    'cptheading': '#F0FFF5',      
+                    'cptdivider': '#32404A',      
+                    'cptmuted': '#A0B3A8',        
+                },
+                fontFamily: {
+                    sans: ['Inter', 'sans-serif']
+                }
+            }
+        }
+    }
+</script>
+
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        letter-spacing: -0.015em;
+        background: #18222A;
+    }
+    .question-card {
+        border: 1.5px dashed #617570;
+        transition: all 0.3s ease;
+    }
+    .question-card:hover {
+        border-color: #4ECDC4;
+    }
+    .option-item {
+        transition: all 0.2s ease;
+        border: 1px solid #617570;
+        display: flex;
+        align-items: flex-start;
+    }
+    .option-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-color: #4ECDC4;
+    }
+    input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .custom-radio {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+        border-radius: 50%;
+        border: 2px solid #617570;
+        margin-right: 12px;
+        position: relative;
+        transition: all 0.2s ease;
+        margin-top: 3px;
+    }
+    input[type="radio"]:checked + .custom-radio {
+        border-color: #4ECDC4;
+        background-color: #4ECDC4;
+    }
+    input[type="radio"]:checked + .custom-radio::after {
+        content: '';
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: white;
+    }
+    .progress-container {
+        position: relative;
+        overflow: hidden;
+    }
+    .progress-bar {
+        height: 8px;
+        border-radius: 4px;
+    }
+    .filled-progress {
+        background-color: #10BED2;
+        position: relative;
+        transition: width 0.5s ease-out;
+    }
+    .filled-progress::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent
+        );
+        animation: shine 2s infinite;
+    }
+    .unfilled-progress {
+        background-color: #32404A;
+    }
+    @keyframes shine {
+        0% {
+            transform: translateX(-100%);
+        }
+        100% {
+            transform: translateX(100%);
+        }
+    }
+    
+    /* Responsive fixes */
+    @media (max-width: 640px) {
+        .navigation {
+            flex-direction: column;
+            gap: 12px;
+        }
+        .btn-prev, .btn-next {
+            width: 100%;
+            text-align: center;
+        }
+        .question-card {
+            padding: 1.5rem;
+        }
+        .options {
+            gap: 12px;
+        }
+        .option-item {
+            padding: 0.75rem;
+        }
+    }
+</style>
+
+<div class="bg-cptbg">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+        <h1 class="text-xl font-bold text-cptheading mb-2 sm:mb-0">Compass</h1>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center">
+            <div class="mr-0 sm:mr-4 mb-2 sm:mb-0 text-cptmuted">
+                <span id="current-question">1</span> of {{ assessment.questions|length }}
+            </div>
+            <div class="bg-cptcard/60 backdrop-blur-sm px-3 py-1 rounded-full">
+                <span class="text-cptaccent font-medium text-sm sm:text-base">{{ assessment.title }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="max-w-4xl mx-auto px-4 py-6 sm:py-8">
+    <!-- Progress Bar -->
+    <div class="mb-6 sm:mb-8">
+        <div class="flex justify-between mb-2">
+            <span class="text-cptmuted text-sm sm:text-base">Your progress</span>
+            <span class="text-cptmuted text-sm sm:text-base" id="progress-percent">0%</span>
+        </div>
+        <div class="progress-container h-2 bg-gray-100 rounded-full mb-1 overflow-hidden">
+            <div class="filled-progress h-full rounded-full" id="progress-bar" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <!-- Question Cards -->
+    <form id="assessment-form">
+        {% for question in assessment.questions %}
+        <div class="question-card bg-cptcard/60 backdrop-blur-sm rounded-xl p-6 sm:p-8 mb-6 {% if loop.index != 1 %}hidden{% endif %}" 
+             data-question="{{ question.name }}">
+            <div class="flex items-start mb-6">
+                <div class="bg-[#1A535C] w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
+                    <span class="text-lg sm:text-xl font-bold text-cptaccent">{{ loop.index }}</span>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold text-cptheading mt-1">{{ question.text }}</h3>
+            </div>
+            
+            <div class="options space-y-3 sm:space-y-4">
+                {% for option in question.options %}
+                <label class="option-item p-4 sm:p-5 rounded-lg cursor-pointer bg-cptcard/80">
+                    <input type="radio" name="{{ question.name }}" value="{{ option.name }}">
+                    <span class="custom-radio"></span>
+                    <span class="text-cptmuted text-base">{{ option.option_text }}</span>
+                </label>
+                {% endfor %}
+            </div>
+            
+            <div class="navigation mt-8 flex flex-col sm:flex-row justify-between gap-3 sm:gap-0">
+                <button 
+                    type="button" 
+                    class="btn-prev {% if loop.index == 1 %}invisible{% endif %} px-6 sm:px-8 py-3 bg-cptdivider rounded-lg text-cptheading hover:bg-cptdivider/80 transition font-medium text-center"
+                >
+                    ← Back
+                </button>
+                
+                <button 
+                    type="button" 
+                    class="btn-next px-6 sm:px-8 py-3 bg-[#055e69] rounded-lg text-white hover:bg-primary-600 transition font-medium text-center whitespace-nowrap"
+                >
+                    {% if loop.index == assessment.questions|length %}
+                        Submit Assessment
+                    {% else %}
+                        Next Question →
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </form>
+</div>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-6 sm:py-8">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+        <p>© {{ frappe.utils.nowdate()[:4] }} Compass Assessments. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const questions = document.querySelectorAll('.question-card');
+        const progressBar = document.getElementById('progress-bar');
+        const progressPercent = document.getElementById('progress-percent');
+        const currentQuestionSpan = document.getElementById('current-question');
+        let currentQuestion = 0;
+        
+        // Update progress bar
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressPercent.textContent = `${Math.round(progress)}%`;
+            currentQuestionSpan.textContent = currentQuestion + 1;
+        }
+        
+        // Navigation handlers
+        document.querySelectorAll('.btn-next').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const currentCard = questions[currentQuestion];
+                const selectedOption = currentCard.querySelector('input:checked');
+                
+                if (!selectedOption) {
+                    frappe.msgprint("Please select an option before continuing");
+                    return;
+                }
+                
+                // Move to next question or submit
+                if (currentQuestion < questions.length - 1) {
+                    currentCard.classList.add('hidden');
+                    questions[currentQuestion + 1].classList.remove('hidden');
+                    currentQuestion++;
+                    updateProgress();
+                    
+                    // Scroll to top of next question
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                } else {
+                    submitAssessment();
+                }
+            });
+        });
+        
+        document.querySelectorAll('.btn-prev').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (currentQuestion > 0) {
+                    questions[currentQuestion].classList.add('hidden');
+                    questions[currentQuestion - 1].classList.remove('hidden');
+                    currentQuestion--;
+                    updateProgress();
+                    
+                    // Scroll to top of previous question
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                }
+            });
+        });
+        
+        // Submit handler
+        function submitAssessment() {
+            const form = document.getElementById('assessment-form');
+            const formData = new FormData(form);
+            const responses = [];
+            
+            // Collect responses
+            {% for question in assessment.questions %}
+            responses.push({
+                question: "{{ question.name }}",
+                selected_option: formData.get("{{ question.name }}")
+            });
+            {% endfor %}
+            
+            frappe.call({
+                method: 'compass.api.submit_assessment_response',
+                args: {
+                    assessment: "{{ assessment.name }}",
+                    responses: responses
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        window.location.href = `/assessments/{{ assessment.name }}/results/${r.message}`;
+                    }
+                },
+                freeze: true,
+                freeze_message: "Submitting your assessment..."
+            });
+        }
+        
+        // Initialize progress
+        updateProgress();
+        
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight') {
+                document.querySelector('.btn-next:not([disabled])')?.click();
+            } else if (e.key === 'ArrowLeft') {
+                document.querySelector('.btn-prev:not([disabled])')?.click();
+            }
+        });
+    });
+</script>
+
+<style>
+    .option-item:hover .custom-radio {
+        border-color: #4ECDC4;
+    }
+    .btn-next:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+</style>
+
+{% endblock %}

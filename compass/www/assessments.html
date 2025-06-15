@@ -1,0 +1,117 @@
+<!-- assessments.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compass Assessments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            500: '#10BED2',
+                            600: '#0DA3B4'
+                        },
+                        secondary: {
+                            800: '#3A4C58'
+                        },
+                        'cpbg': '#18222A',
+                        'cptbg': '#3C4B4E',
+                        'cppillartext':'#8bbbb8',
+                        'cpttext': '#CFF2DA',         
+                        'cptsecondary': '#617570',    
+                        'cptaccent': '#4ECDC4',       
+                        'cptaccent2': '#FF6B6B',      
+                        'cptinfo': '#1A535C',         
+                        'cptsuccess': '#88D498',      
+                        'cptcard': '#22303C',         
+                        'cptheading': '#F0FFF5',      
+                        'cptdivider': '#32404A',      
+                        'cptmuted': '#A0B3A8',        
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.015em;
+            background: #18222A;
+        }
+        .assessment-card {
+            transition: all 0.3s ease;
+            border: 1.5px dashed #617570;
+        }
+        .assessment-card:hover {
+            transform: translateY(-3px);
+            border-color: #4ECDC4;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="bg-cpbg text-cpttext">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 text-center">
+            <h1 class="text-4xl md:text-5xl font-light mb-4 tracking-tight text-cptheading">
+                Compass Assessments
+            </h1>
+            <p class="text-cptmuted text-lg">
+                Measure skills, evaluate competencies, drive growth
+            </p>
+        </header>
+
+        <!-- Assessment Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {% for assessment in assessments %}
+            <div 
+                class="assessment-card bg-cptcard/60 backdrop-blur-sm p-6 rounded-xl transition-all duration-300 flex flex-col h-full"
+            >
+                <div class="flex-1">
+                    <h3 class="text-xl font-semibold text-cptheading mb-3">
+                        {{ assessment.assessment_name }}
+                    </h3>
+                    <p class="text-cptmuted mb-5">
+                        {{ assessment.description }}
+                    </p>
+                    
+                    <div class="flex justify-between items-center mb-6">
+                        <span class="text-cptsecondary text-sm flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            {{ assessment.time_required }} min
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="mt-auto">
+                    <a 
+                        href="/assessments/{{ assessment.name }}/guidelines" 
+                        class="w-full bg-[#055e69] hover:bg-primary-600 text-white py-3 px-4 rounded-lg transition flex items-center justify-center font-medium"
+                    >
+                        Start Assessment
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-cptdivider text-center text-cptmuted">
+            <p>© {{ frappe.utils.nowdate()[:4] }} Compass Assessments. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>

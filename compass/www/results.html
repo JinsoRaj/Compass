@@ -1,0 +1,465 @@
+
+
+<head>
+    
+   <title>Assessment Results</title>
+   <!--<script src="https://cdn.tailwindcss.com"></script>-->
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+   <style>
+       body {
+           font-family: 'Inter', sans-serif;
+           letter-spacing: -0.015em;
+           background: #18222A;
+       }
+       @media print {
+           .no-print {
+               display: none !important;
+           }
+           body {
+               background: #18222A !important;
+               color: black !important;
+           }
+           .print-header {
+               display: block !important;
+           }
+           .filled-bar{
+               transition: none !important;
+           }
+           .filled-bar::after {
+               display: none !important;
+           }
+       }
+       .print-header {
+           display: none;
+       }
+       .scale-bar {
+           height: 8px;
+           border-radius: 4px;
+       }
+       .scale-bar-container {
+           position: relative;
+           overflow: hidden;
+       }
+       .filled-bar {
+           /*background-color: #10BED2;*/
+           position: relative;
+           transition: width 1s ease-out;
+       }
+       .filled-bar::after {
+           content: '';
+           position: absolute;
+           top: 0;
+           left: 0;
+           right: 0;
+           bottom: 0;
+           background: linear-gradient(
+           90deg,
+           transparent,
+           rgba(255, 255, 255, 0.3),
+           transparent
+           );
+           animation: shine 2s infinite;
+       }
+       .unfilled-bar {
+           background-color: #E5E7EB;
+       }
+       .suggestion-card {
+           transition: all 0.2s ease;
+           border-left: 4px solid;
+       }
+       .suggestion-card:hover {
+           transform: translateY(-2px);
+           box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+       }
+       .status-badge {
+           display: inline-block;
+           padding: 5px 8px;
+           /*border-radius: 12px;*/
+           font-size: 0.75rem;
+           font-weight: 500;
+           border: 1px solid grey;
+           background-color: #617570;
+       }
+       .scale-label {
+           position: relative;
+           text-align: center;
+           font-weight: 500;
+           color: #A0B3A8;
+       }
+       .scale-label.active::after {
+           content: '';
+           position: absolute;
+           bottom: -20px;
+           left: 50%;
+           transform: translateX(-50%);
+           width: 8px;
+           height: 8px;
+           border-radius: 50%;
+           background-color: #10BED2;
+       }
+       @keyframes shine {
+           0% {
+               transform: translateX(-100%);
+           }
+           100% {
+               transform: translateX(100%);
+           }
+       }
+   </style>
+</head>
+<!-- Context Variables:
+  - response: Assessment Response document
+  - assessment: Assessment document
+-->
+
+
+<div class="bg-cptbg no-print">
+   <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+       <h1 class="text-xl font-bold text-cptheading">Compass</h1>
+       <button onclick="window.print()" class="px-4 py-2 bg-[#436664] text-white rounded-lg hover:bg-[#25333e] transition font-medium">
+            🖨️ ️Print Result
+       </button>
+   </div>
+</div>
+
+
+<div class="max-w-6xl mx-auto px-4 py-8">
+   
+   <!-- Rating Section -->
+   <div class="text-center mb-12">
+       <p class="text-xl text-cptmuted mb-4">Your organization is:</p>
+       <h1 class="text-4xl md:text-6xl font-bold text-cptheading mb-14">
+           {{ response.current_scale }}
+       </h1>
+       
+       {% if response.scale_description %}
+           <p class="text-lg text-cptmuted max-w-2xl mx-auto">
+               {{ response.scale_description }}
+           </p>
+       {% endif %}
+   </div>
+   
+   
+   <!-- Scale Visualization -->
+   <div class="bg-cptcard/40 backdrop-blur-lg bg-clip-padding rounded-xl shadow-sm p-6 md:p-6 mb-4 text-sm md:text-base">
+       <div class="grid grid-cols-{{ assessment.scales | length }} gap-4 mb-3">
+           {% for scale in assessment.scales %}
+           <div class="scale-label {% if scale.scale_name == response.current_scale %}active{% endif %}">
+               {{ scale.scale_name }}
+           </div>
+           {% endfor %}
+       </div>
+       
+       <div class="scale-bar-container h-2 bg-gray-100 rounded-full mb-1 overflow-hidden">
+           <div class="filled-bar h-full bg-[#055e69] rounded-full transition-all duration-1000 ease-out" 
+                style="width: 0%"
+                id="progress-bar"></div>
+       </div>
+       
+       <div class="grid grid-cols-{{ assessment.scales | length }} justify-items-end">
+           {% for scale in assessment.scales %}
+           <div class="text-cptmuted text-center">{{ scale.max_score }}</div>
+           {% endfor %}
+       </div>
+   </div>
+   
+   <!-- Score Summary -->
+   <div class="bg-cptcard/40 backdrop-blur-lg bg-clip-padding rounded-xl shadow-sm p-8 mb-14">
+       <div class="grid grid-cols-1 items-center md:grid-cols-4 gap-8">
+           <div class="text-center">
+               <div class="relative w-[200px] h-[200px] mx-auto inline-block">
+                   <canvas id="mainPillarChart" width="250" height="250"></canvas>
+                   <div class="absolute inset-0 flex items-center justify-center">
+                       <span class="text-5xl font-light text-cptsuccess mb-1">{{ (response.percentage_score|float|round(1) if (response.percentage_score|float != response.percentage_score|float|int) else response.percentage_score|int) }}%
+                       </span>
+                       <!--<p class="text-cptmuted">Percentage</p>-->
+                   </div>
+               </div>
+           </div>
+           
+           <div class="text-center">
+               <p class="text-5xl font-light text-[#055e69] mb-1">{{ response.total_score }}</p>
+               <p class="text-cptmuted">Overall Score</p>
+           </div>
+           <div class="text-center">
+               <p class="text-5xl font-light text-cptheading mb-1">{{ response.max_possible_score }}</p>
+               <p class="text-cptmuted">Max Possible</p>
+           </div>
+           
+           <div class="text-center">
+               <p class="text-5xl font-light text-cptsuccess mb-1">{{ response.current_scale }}</p>
+               <p class="text-cptmuted">Rating</p>
+           </div>
+       </div>
+   </div>
+
+   <!-- Pillar Scores -->
+   
+   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+   {% if response.pillar_1_text %}
+   <div class="flex flex-col items-center">
+       <h3 class="text-lg font-semibold text-cptmuted mb-4">{{ response.pillar_1_text }}</h3>
+       <div class="relative w-32 h-32">
+           <canvas id="pillar1Chart" width="150" height="150"></canvas>
+           <div class="absolute inset-0 flex items-center justify-center">
+               <span class="text-2xl text-primary-500">
+                   {{ response.pillar_1_score }}
+               </span>
+           </div>
+       </div>
+   </div>
+   {% endif %}
+   
+   {% if response.pillar_2_text %}
+   <div class="flex flex-col items-center">
+       <h3 class="text-lg font-semibold text-cptmuted mb-4">{{ response.pillar_2_text }}</h3>
+       <div class="relative w-32 h-32">
+           <canvas id="pillar2Chart" width="150" height="150"></canvas>
+           <div class="absolute inset-0 flex items-center justify-center">
+               <span class="text-2xl text-primary-500">
+                   {{ response.pillar_2_score }}
+               </span>
+           </div>
+       </div>
+   </div>
+   {% endif %}
+   
+   {% if response.pillar_3_text %}
+   <div class="flex flex-col items-center">
+       <h3 class="text-lg font-semibold text-cptmuted mb-4">{{ response.pillar_3_text }}</h3>
+       <div class="relative w-32 h-32">
+           <canvas id="pillar3Chart" width="150" height="150"></canvas>
+           <div class="absolute inset-0 flex items-center justify-center">
+               <span class="text-2xl text-primary-500">
+                   {{ response.pillar_3_score }}
+               </span>
+           </div>
+       </div>
+   </div>
+   {% endif %}
+</div>
+
+
+   <!-- Pillar and Suggestions -->
+   <div class="mb-12">
+       <h2 class="text-2xl font-bold text-cptmuted mt-10 mb-10">Your Submission at a Glance</h2>
+       
+       {% if response.pillar_1_text %}
+       <div class="mb-10">
+           <div class="flex items-center mb-6">
+               <h3 class="text-xl font-semibold text-cppillartext mr-4">{{ response.pillar_1_text }} ({{ response.pillar_1_score }})</h3>
+               <div class="flex-grow h-px bg-gray-200"></div>
+           </div>
+           <div class="mb-12 text-cptmuted">
+               <p>
+                   {{pillar_1_desc}}
+               </p>
+           </div>
+           
+           {% for answer in response.answers if answer.pillar == response.pillar_1_text %}
+               {% include "templates/includes/assessment/answer_card.html" %}
+           {% else %}
+               <div class="text-center py-4 text-gray-500">
+                   No answers for this pillar
+               </div>
+           {% endfor %}
+       </div>
+       {% endif %}
+       
+       {% if response.pillar_2_text %}
+       <div class="mb-10">
+           <div class="flex items-center mb-6">
+               <h3 class="text-xl font-semibold text-cppillartext mr-4">{{ response.pillar_2_text }} ({{ response.pillar_2_score}})</h3>
+               <div class="flex-grow h-px bg-gray-200"></div>
+           </div>
+           <div class="mb-12 text-cptmuted">
+               <p>
+                   {{pillar_2_desc}}
+               </p>
+           </div>
+           
+           {% for answer in response.answers if answer.pillar == response.pillar_2_text %}
+               {% include "templates/includes/assessment/answer_card.html" %}
+           {% else %}
+               <div class="text-center py-4 text-gray-500">
+                   No answers for this pillar
+               </div>
+           {% endfor %}
+       </div>
+       {% endif %}
+       
+       {% if response.pillar_3_text %}
+       <div class="mb-10">
+           <div class="flex items-center mb-6">
+               <h3 class="text-xl font-semibold text-cppillartext mr-4">{{ response.pillar_3_text }} ({{ response.pillar_3_score }})</h3>
+               <div class="flex-grow h-px bg-gray-200"></div>
+           </div>
+           <div class="mb-12 text-cptmuted">
+               <p>
+                   {{pillar_3_desc}}
+               </p>
+           </div>
+           
+           {% for answer in response.answers if answer.pillar == response.pillar_3_text %}
+               {% include "templates/includes/assessment/answer_card.html" %}
+           {% else %}
+               <div class="text-center py-4 text-gray-500">
+                   No answers for this pillar
+               </div>
+           {% endfor %}
+       </div>
+       {% endif %}
+   </div>
+
+   <!-- Share Section -->
+   <div class="bg-cptcard rounded-xl shadow-sm p-8">
+       <div class="max-w-3xl mx-auto">
+           <p class="text-cptmuted mb-4">
+               The analytical report provides valuable insights into your assessment performance. 
+               If the self-assessment selections are done thoughtfully, this page describes the 
+               actual current state of your fundraising operation. This graphical section of the 
+               report can actually be highly useful as a starting diagnostic tool. Use this section 
+               of the report to be aware of where you are doing well, and what requires 
+               improvement—immediate or long-term.
+           </p>
+           <p class="text-cptmuted mb-6">
+               Use this URL to share this page with colleagues, funders, or anyone you choose:
+           </p>
+           
+           <!--start-->
+           <div class="flex flex-col md:flex-row sm:flex-row gap-2">
+               <input 
+                   type="text"
+                   id="current-url-field"
+                   value="{{ frappe.utils.get_url() }}" 
+                   class="flex-grow px-4 py-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-[#3C4B4E] text-cptmuted"
+                   readonly
+               >
+               <button 
+                   class="bg-[#055e69] hover:bg-primary-600 text-white px-6 py-3 rounded-r-lg transition copy-button"
+               >
+                   Copy
+               </button>
+           </div>
+           <!--end-->
+       </div>
+   </div>
+   
+</div>
+
+<footer class="bg-gray-800 text-white py-8">
+   <div class="max-w-6xl mx-auto px-4 text-center">
+       <p>© {{ frappe.utils.nowdate()[:4] }} Compass Assessments. All rights reserved.</p>
+   </div>
+</footer>
+
+
+
+<script>
+   // Copy URL functionality
+   document.querySelectorAll('.copy-button').forEach(button => {
+       button.addEventListener('click', function() {
+           const input = this.previousElementSibling;
+           input.select();
+           document.execCommand('copy');
+           
+           const originalText = this.textContent;
+           const originalBg = this.style.backgroundColor;
+           this.textContent = 'Copied!';
+           this.style.backgroundColor = '#90ee90'; // Light green
+           
+           setTimeout(() => {
+               this.textContent = originalText;
+               this.style.backgroundColor = originalBg; // Revert to original color
+           }, 2000);
+       });
+   });
+   
+   document.addEventListener('DOMContentLoaded', function() {
+       document.getElementById('current-url-field').value = window.location.href;
+   });
+   
+   
+   //piller donut
+   document.addEventListener('DOMContentLoaded', function() {
+       // Function to create a donut chart
+       function createDonutChart(canvasId, percentage) {
+           // Extract the numeric value from the string (e.g., "68.8%" -> 68.8)
+           const value = parseFloat(percentage);
+           const remaining = 100 - value;
+           
+           const ctx = document.getElementById(canvasId).getContext('2d');
+           return new Chart(ctx, {
+               type: 'doughnut',
+               data: {
+                   datasets: [{
+                       data: [value, remaining],
+                       backgroundColor: [
+                           '#055e69', // Primary color
+                           '#E5E7EB' // Light gray
+                       ],
+                       borderWidth: 0,
+                       cutout: '85%' // Makes it a donut shape
+                   }]
+               },
+               options: {
+                   responsive: true,
+                   maintainAspectRatio: true,
+                   plugins: {
+                       legend: {
+                           display: false
+                       },
+                       tooltip: {
+                           enabled: false
+                       }
+                   },
+                   animation: {
+                       animateRotate: true,
+                       animateScale: true
+                   }
+               }
+           });
+       }
+       
+       // Create charts for each pillar
+       {% if response.pillar_1_text %}
+       createDonutChart('pillar1Chart', '{{ response.pillar_1_score }}'.replace('%', ''));
+       {% endif %}
+       
+       {% if response.pillar_2_text %}
+       createDonutChart('pillar2Chart', '{{ response.pillar_2_score }}'.replace('%', ''));
+       {% endif %}
+       
+       {% if response.pillar_3_text %}
+       createDonutChart('pillar3Chart', '{{ response.pillar_3_score }}'.replace('%', ''));
+       {% endif %}
+       
+       {% if response.percentage_score %}
+       createDonutChart('mainPillarChart', '{{ response.percentage_score }}'.replace('%', ''));
+       {% endif %}
+       
+       
+       //code start for scale line chart
+       // Get the position percentage from the template variable
+       const position = {{ ((response.total_score / response.max_possible_score) * 100) if response.max_possible_score else 0 }};
+       
+       // Animate the progress bar
+       const progressBar = document.getElementById('progress-bar');
+       let width = 0;
+       const interval = setInterval(() => {
+           if (width >= position) {
+               clearInterval(interval);
+               return;
+           }
+           width += 1;
+           progressBar.style.width = width + '%';
+       }, 5); // Adjust speed as needed
+       
+       //code end for scale line chart
+       
+       
+   });
+</script>
+
+

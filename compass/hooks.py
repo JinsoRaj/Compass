@@ -227,3 +227,9 @@ app_license = "mit"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+
+website_route_rules = [
+    {"from_route": "/assessments/<assessment>/guidelines", "to_route": "guidelines"},
+    {"from_route": "/assessments/<assessment>/results/<response>", "to_route": "results"},
+    {"from_route": "/assessments/<assessment>/questions", "to_route": "questions"},
+]
