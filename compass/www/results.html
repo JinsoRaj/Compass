@@ -3,9 +3,42 @@
 <head>
     
    <title>Assessment Results</title>
-   <!--<script src="https://cdn.tailwindcss.com"></script>-->
+   <script src="https://cdn.tailwindcss.com"></script>
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+   <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: {
+                        500: '#10BED2',
+                        600: '#0DA3B4'
+                    },
+                    secondary: {
+                        800: '#3A4C58'
+                    },
+                    'cpbg': '#18222A',
+                    'cptbg': '#3C4B4E',
+                    'cppillartext':'#8bbbb8',
+                    'cpttext': '#CFF2DA',         // Main text
+                    'cptsecondary': '#617570',    // Secondary
+                    'cptaccent': '#4ECDC4',       // Accent / Primary
+                    'cptaccent2': '#FF6B6B',      // Warning
+                    'cptinfo': '#1A535C',         // Info
+                    'cptsuccess': '#88D498',      // Success
+                    'cptcard': '#22303C',         // Card BG
+                    'cptheading': '#F0FFF5',      // Heading
+                    'cptdivider': '#32404A',      // Divider
+                    'cptmuted': '#A0B3A8',        // Muted
+                },
+                fontFamily: {
+                    sans: ['Inter', 'sans-serif']
+                }
+            }
+        }
+    }
+</script>
    <style>
        body {
            font-family: 'Inter', sans-serif;
